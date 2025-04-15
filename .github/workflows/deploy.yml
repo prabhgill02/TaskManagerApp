@@ -29,8 +29,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/app
-            git pull origin main
+            cd /home/ubuntu/app/TaskManagerApp
             cd backend
             npm install
             pkill node || true
