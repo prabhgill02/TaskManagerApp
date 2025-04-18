@@ -2,7 +2,7 @@ name: CI/CD - Task Manager App
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install
@@ -62,6 +62,20 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Install nvm if not already installed
+            if [ ! -d "$HOME/.nvm" ]; then
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            fi 
+
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
+
+            # Install Node.js LTS if not installed
+            if ! command -v node &> /dev/null; then
+              nvm install --lts
+            fi
+
+            # Deploy the backend
             cd ~/app || git clone https://github.com/${{ github.repository }} ~/app
             cd ~/app/backend
             git pull origin main
