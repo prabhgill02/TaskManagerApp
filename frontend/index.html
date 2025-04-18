@@ -14,7 +14,9 @@
 
   <script>
     async function loadTasks() {
-      const res = await fetch('http://localhost:3000/api/tasks');
+      const API_BASE_URL = 'http://13.217.31.114:3000';
+      const API_BASE_LOCAL_URL = 'http://54.152.105.179:3000';
+      const res = await fetch(`${API_BASE_URL}/api/tasks`);// Change it to local if running on locals
       const tasks = await res.json();
       const list = document.getElementById('taskList');
       list.innerHTML = '';
