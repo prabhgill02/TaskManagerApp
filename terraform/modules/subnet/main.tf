@@ -6,3 +6,8 @@ resource "aws_subnet" "main" {
 
   tags = var.tags
 }
+
+resource "aws_route_table_association" "public" {
+  subnet_id      = aws_subnet.main.id
+  route_table_id = var.route_table_id
+}

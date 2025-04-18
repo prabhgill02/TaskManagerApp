@@ -14,6 +14,7 @@ module "subnet" {
   vpc_id = module.vpc.vpc_id
   cidr_block = var.subnet_cidr
   availability_zone = var.availability_zone
+  route_table_id    = module.vpc.route_table_id
   tags = local.tags
 }
 
