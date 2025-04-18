@@ -67,4 +67,6 @@ backend/
 
 2. Push code to GitHub and watch GitHub Actions deploy.
 
+terraform plan -var-file="terraform.tfvars"
+terraform apply -var-file="terraform.tfvars"
 

@@ -1,14 +1,12 @@
-name: CI - Task Manager App
+name: CI/CD - Task Manager App
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build-test:
     runs-on: ubuntu-latest
 
     defaults:
@@ -19,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -29,3 +27,44 @@ jobs:
 
       - name: Run tests
         run: npm test
+
+  deploy-frontend:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Sync frontend to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks
+        env:
+          AWS_S3_BUCKET: taskmanager-frontend-bucket
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: "frontend"
+
+  deploy-backend:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy backend via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/app || git clone https://github.com/${{ github.repository }} ~/app
+            cd ~/app/backend
+            git pull origin main
+            npm install
+            pkill node || true
+            nohup node server.js > server.log 2>&1 &
