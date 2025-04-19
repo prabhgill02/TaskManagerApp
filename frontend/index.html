@@ -14,7 +14,7 @@
 
   <script>
     async function loadTasks() {
-      const API_BASE_URL = 'http://13.217.31.114:3000';
+      const API_BASE_URL = 'http://54.80.211.193:3000';
 //      const API_BASE_LOCAL_URL = 'http://localhost:3000';
       const res = await fetch(`${API_BASE_URL}/api/tasks`);// Change it to local if running on locals
       const tasks = await res.json();
@@ -37,7 +37,7 @@
       const input = document.getElementById('taskInput');
       const title = input.value;
       if (!title) return;
-      await fetch('http://13.217.31.114:3000/api/tasks', {
+      await fetch('http://54.80.211.193:3000/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title })
@@ -47,12 +47,12 @@
     }
 
     async function markComplete(id) {
-      await fetch(`http://13.217.31.114:3000/api/tasks/${id}`, { method: 'PUT' });
+      await fetch(`http://54.80.211.193:3000/api/tasks/${id}`, { method: 'PUT' });
       loadTasks();
     }
 
     async function deleteTask(id) {
-      await fetch(`http://13.217.31.114:3000/api/tasks/${id}`, { method: 'DELETE' });
+      await fetch(`http://54.80.211.193:3000/api/tasks/${id}`, { method: 'DELETE' });
       loadTasks();
     }
 
