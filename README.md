@@ -1,72 +1,81 @@
-# run the backend
-node backend/server.js
+# Task Manager App (CI/CD Project)
 
-# serve the frontend
-serve frontend
+This is a full-stack Task Manager web application designed and deployed as part of a DevOps group assignment. The project demonstrates an end-to-end CI/CD pipeline using GitHub Actions, Terraform, and AWS services.
 
-# 3-Tier Task Manager App
+## 🔧 Project Overview
 
-This project demonstrates a 3-tier application deployed on AWS with:
+- **Frontend**: HTML/CSS/JavaScript hosted on AWS S3
+- **Backend**: Node.js + Express running on EC2
+- **Database**: SQLite (local to EC2)
+- **CI/CD**: GitHub Actions
+- **IaC**: Terraform
 
-- **Frontend**: Static HTML hosted on S3
-- **Backend**: Node.js app on EC2
-- **Database**: SQLite bundled with backend
+## 🚀 Features
 
-## 🛠 Technologies
+- Full CRUD operations for task management (Create, Read, Update, Delete)
+- API endpoints served via Express.js
+- Frontend automatically fetches and displays tasks
+- Backend logging using Winston
+- Logs streamed to AWS CloudWatch Logs
 
-- AWS (S3, EC2, VPC)
+## 🛠️ Technologies
+
+- Node.js / Express
+- SQLite
+- GitHub Actions
 - Terraform (modular)
-- GitHub Actions (CI/CD)
+- AWS EC2, S3, IAM, CloudWatch
 
-##  Deployment Overview
-
-### CI/CD
-
-- Frontend is deployed to S3 automatically on push.
-- Backend is pulled and restarted on EC2 using SSH via GitHub Actions.
-
-### Setup Secrets
-
-In your GitHub repository, add these secrets:
-
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `EC2_PUBLIC_IP`
-- `EC2_SSH_KEY` (private key for SSH)
-
-## 📦 Terraform Modules
-
-- `modules/s3` – Sets up static site hosting
-- `modules/ec2` – Launches and configures EC2
-- `modules/security_group` – Opens ports for HTTP and SSH
-
-##  Structure
+## 🗂️ Directory Structure
 
 ```
-terraform/
-  ├── main/            # Root configs
-  └── modules/
-      ├── s3/
-      ├── ec2/
-      └── security_group/
-.github/workflows/
-  └── deploy.yml       # CI/CD pipeline
-frontend/
-  └── index.html       # Static UI
-backend/
-  └── server.js        # Node.js app
+.
+├── backend/                 # Node.js Express API
+│   ├── routes.js           # API endpoints
+│   ├── server.js           # Express app + Winston logging
+│   └── db.js               # SQLite database setup
+├── frontend/               # HTML/CSS/JS files
+│   └── index.html
+├── terraform/              # IaC using Terraform
+│   ├── main/               # Root Terraform config
+│   └── modules/            # VPC, EC2, S3 etc.
+└── .github/workflows/      # GitHub Actions CI/CD pipelines
 ```
 
-##  Next Steps
+## 🧪 How to Run
 
-1. Initialize Terraform:
-   ```bash
-   terraform init
-   terraform apply
-   ```
+### Locally (for testing)
+1. `cd backend && npm install`
+2. `node server.js`
+3. Open `frontend/index.html` in your browser
 
-2. Push code to GitHub and watch GitHub Actions deploy.
+### On AWS
+- Run `terraform apply` to provision infra
+- Push code to GitHub to trigger the GitHub Actions workflow
 
-terraform plan -var-file="terraform.tfvars"
-terraform apply -var-file="terraform.tfvars"
+## ✅ API Endpoints
 
+- `GET /api/tasks` - Get all tasks
+- `POST /api/tasks` - Create a task
+- `PUT /api/tasks/:id` - Mark task as complete
+- `DELETE /api/tasks/:id` - Delete a task
+
+## 🧩 CI/CD Workflow
+
+- Lint & test code on push
+- Deploy frontend to S3
+- SSH into EC2 and deploy backend
+- Stream logs to CloudWatch
+
+## 📈 Monitoring & Logging
+
+- `winston` logs to `backend/logs/server.log`
+- CloudWatch Agent installed on EC2
+- Logs sent to AWS CloudWatch Log Group: `task-manager-backend`
+
+## 📄 License
+
+MIT License
+
+---
+*This project was built for academic purposes as part of a DevOps course at Conestoga College.*
